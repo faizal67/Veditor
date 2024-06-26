@@ -59,3 +59,53 @@
   .move-left {
     animation: moveLeft 1s ease-out forwards;
   }
+
+
+  /* user defined tailwind css */
+  .border-radius{
+    border-bottom: 0;
+    border-top-left-radius: 40px;
+    border-top-right-radius: 40px;
+  }
+
+  .border-radius-inner{
+    border-bottom: 0;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+  }
+
+  .camera-container {
+    background-color: #000;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    left: 50%;
+    line-height: 26px;
+    margin-left: -90px;
+    position: absolute;
+    text-align: center;
+    width: 180px;
+    z-index: 1;
+}
+
+.camera {
+  cursor: pointer;
+  display: inline-block;
+  height: 30px;
+  width: 30px;
+}
+
+.dot {
+  background-color: #707070;
+  border-radius: 4px;
+  display: inline-block;
+  height: 8px;
+  width: 8px;
+}
+
+.active .dot{
+  background-color: #2dc937;
+}
+
+.container{
+  width: 80%;
+}
