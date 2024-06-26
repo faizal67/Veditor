@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const cors = require('cors');
 const { Server } = require('socket.io');
+const QuillDelta = require('quill-delta');
 
 const app = express();
 const server = http.createServer(app);
@@ -21,7 +22,8 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-let documentContent = ''; // Simple in-memory document storage for example
+// let documentContent = ''; // Simple in-memory document storage for example
+let documentContent = new QuillDelta(); // Initialize with empty Delta
 
 io.on('connection', (socket) => {
   console.log('a user connected');
@@ -33,14 +35,24 @@ io.on('connection', (socket) => {
 
   socket.on('newDocument', (newContent) => {
     console.log('new content rec:', newContent)
-    documentContent = newContent;
+    const deltaObj = new QuillDelta(newContent);
+    documentContent = deltaObj;
     socket.broadcast.emit('document', documentContent); // Broadcast new document content to all clients
   });
 
   // Listen for changes from the client
+  // socket.on('change', (delta) => {
+  //   console.log('data received', delta);
+  //   documentContent = delta; // Adjust this based on your delta format
+  //   socket.broadcast.emit('change', delta); // Broadcast change to all other clients
+  // });
+
   socket.on('change', (delta) => {
-    console.log('data received', delta);
-    documentContent += delta; // Adjust this based on your delta format
+    console.log('data received:', delta);
+    const deltaObj = new QuillDelta(delta);
+    // console.log('previous data:',documentContent)
+    // console.log('deltaObj:',deltaObj);
+    documentContent = documentContent.compose(deltaObj); // Compose the changes
     socket.broadcast.emit('change', delta); // Broadcast change to all other clients
   });
 

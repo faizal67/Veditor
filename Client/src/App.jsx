@@ -20,11 +20,17 @@ function App() {
     socket.emit('newDocument', fileContent); // Send the new document content to the server
   };
 
+  // const handleTextChange = (delta, oldDelta, source) => {
+  //   if (quillRef.current && source === 'user') {
+  //     const newDelta = quillRef.current.getContents();
+  //     setContent(newDelta);
+  //     socket.emit('change', newDelta);
+  //   }
+  // };
+
   const handleTextChange = (delta, oldDelta, source) => {
     if (quillRef.current && source === 'user') {
-      const newDelta = quillRef.current.getContents();
-      setContent(newDelta);
-      socket.emit('change', newDelta);
+      socket.emit('change', delta);
     }
   };
 
@@ -38,7 +44,7 @@ function App() {
     // Fetch initial document content from the server if needed
     socket.emit('requestDocument');
     const handleInitialDocument = (documentContent) => {
-      if (documentContent !== '') {
+      if (documentContent.ops.length > 0) {
         setView('editor');
         setContent(documentContent);
         if (quillRef.current) {
@@ -48,19 +54,12 @@ function App() {
 
     };
     socket.on('document', handleInitialDocument)
-    // handleFileContent(documentContent)
-    // console.log('server send data:', documentContent)
-    // console.log('ref',quillRef.current)
-    // if (quillRef.current) {
-    //   quillRef.current.setContents(documentContent);
-    //   setContent(documentContent);
-    //   setView('editor'); // Switch to editor view if there's an existing document
-    // }
-    // });
 
     socket.on('change', (delta) => {
       if (quillRef.current) {
+        // quillRef.current.setContents(delta);
         quillRef.current.updateContents(delta);
+
       }
     });
 

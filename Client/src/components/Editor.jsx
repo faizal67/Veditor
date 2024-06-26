@@ -57,9 +57,16 @@ const Editor = forwardRef(({ readOnly, defaultValue, onTextChange, onSelectionCh
       // console.log('default value reseived:',quill.getContents)
     }
 
-    quill.on(Quill.events.TEXT_CHANGE, (...args) => {
+    // quill.on(Quill.events.TEXT_CHANGE, (...args) => {
+    //   if (onTextChangeRef.current) {
+    //     // console.log('args',args)
+    //     onTextChangeRef.current(...args);
+    //   }
+    // });
+
+    quill.on(Quill.events.TEXT_CHANGE, (delta, oldDelta, source) => {
       if (onTextChangeRef.current) {
-        onTextChangeRef.current(...args);
+        onTextChangeRef.current(delta, oldDelta, source);
       }
     });
 
