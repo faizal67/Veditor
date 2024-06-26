@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.controls {
+    display: flex;
+    border: 1px solid #ccc;
+    border-top: 0;
+    padding: 10px;
+  }
+  
+  .controls-right {
+    margin-left: auto;
+  }
+  
+  .state {
+    margin: 10px 0;
+    font-family: monospace;
+  }
+  
+  .state-title {
+    color: #999;
+    text-transform: uppercase;
+  }
+
+  .ql-editor ::selection {
+    background: lightblue; /* Change this to your desired color */
+  }
+  
+  .ql-editor ::-moz-selection {
+    background: lightblue; /* For Firefox */
+  }
+
+  .ql-editor {
+    height: 36rem;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+  }
+
+  .ql-toolbar{
+
+  }
