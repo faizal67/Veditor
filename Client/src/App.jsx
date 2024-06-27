@@ -38,6 +38,13 @@ function App() {
     setView('home'); // Switch back to the home view
   };
 
+  const handleSave = () => { //save file 
+    if (quillRef.current) {
+      const currentContent = quillRef.current.getContents();
+      socket.emit('saveDocument', currentContent);
+    }
+  };
+
   console.log('current content is:', content)
 
   useEffect(() => {
@@ -59,7 +66,6 @@ function App() {
       if (quillRef.current) {
         // quillRef.current.setContents(delta);
         quillRef.current.updateContents(delta);
-
       }
     });
 
@@ -78,6 +84,9 @@ function App() {
         <div className="bg-sky-50">
           <button onClick={handleBack} className="mb-4 bg-blue-500 text-white px-4 py-2 rounded">
             Back
+          </button>
+          <button onClick={handleSave} className="mb-4 bg-green-500 ml-5 text-white px-4 py-2 rounded">
+            Save
           </button>
           <div className="max-w-5xl mx-auto p-4">
             <Editor

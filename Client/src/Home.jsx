@@ -27,7 +27,7 @@ const Home = ({ handleFileContent, setView }) => {
             </div>
           </div>
 
-          <div className="p-5 bg-black border-4 border-gray-500 rounded-lg border-radius">
+          <div className="p-5 bg-black border-4 border-gray-500 rounded-lg border-radius mt-8">
             <div className="bg-white rounded-md h-96 border-radius-inner ">
               <div className="camera-container">
                 <div className="camera">
@@ -40,7 +40,7 @@ const Home = ({ handleFileContent, setView }) => {
                   <div className="dot"></div>
                 </div>
               </div>
-              <img src={img} className=" w-full pt-8" alt="" />
+              <img src={img} className=" w-full pt-4 " alt="" />
             </div>
           </div>
         </div>

@@ -4,11 +4,14 @@ const cors = require('cors');
 const { Server } = require('socket.io');
 const QuillDelta = require('quill-delta');
 
+const fs = require('fs');
+const path = require('path');
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173', // Vite app URL
+    origin: ['http://localhost:5173','http://192.168.20.104:5173'], // Vite app URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true, // if you need to pass cookies with CORS requests
@@ -16,7 +19,7 @@ const io = new Server(server, {
 });
 
 const corsOptions = {
-  origin: 'http://localhost:5173', // Vite app URL
+  origin: ['http://localhost:5173','http://192.168.20.104:5173'], // Vite app URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // HTTP methods to allow
   allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
 };
@@ -54,6 +57,12 @@ io.on('connection', (socket) => {
     // console.log('deltaObj:',deltaObj);
     documentContent = documentContent.compose(deltaObj); // Compose the changes
     socket.broadcast.emit('change', delta); // Broadcast change to all other clients
+  });
+
+
+  socket.on('saveDocument', (content) => {
+    console.log('Saving document:', content);
+    fs.writeFileSync(path.join(__dirname, 'document.json'), JSON.stringify(content));
   });
 
   socket.on('disconnect', () => {
