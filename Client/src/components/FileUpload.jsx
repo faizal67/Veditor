@@ -3,20 +3,22 @@ import * as mammoth from 'mammoth';
 import Quill from 'quill';
 
 
+
 function htmlToDelta(html) {
   const quill = new Quill(document.createElement('div'));
   quill.clipboard.dangerouslyPasteHTML(0, html);
   return quill.getContents();
 }
-const FileUpload = ({ onFileContent }) => {
-  const handleFileChange = async (event) => {
+const FileUpload = ({ handleFileUpload }) => {
+
+  const handleFile = async (event) => {
     const file = event.target.files[0];
     if (file) {
       const arrayBuffer = await file.arrayBuffer();
       const result = await mammoth.convertToHtml({ arrayBuffer });
       const htmlContent = result.value;
       const delta = htmlToDelta(htmlContent);
-      onFileContent(delta);
+      handleFileUpload(delta);
     }
   };
 
@@ -25,7 +27,7 @@ const FileUpload = ({ onFileContent }) => {
       <input
         type="file"
         accept=".doc,.docx"
-        onChange={handleFileChange}
+        onChange={handleFile}
         className="block w-full text-sm 
                    file:mr-4 file:py-2 file:px-4
                    file:rounded-full file:border-0

@@ -26,44 +26,45 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // let documentContent = ''; // Simple in-memory document storage for example
-let documentContent = new QuillDelta(); // Initialize with empty Delta
+// let documentContent = new QuillDelta(); // Initialize with empty Delta
+
+const documents = {};
 
 io.on('connection', (socket) => {
   console.log('a user connected');
 
   // Handle request for current document content
-  socket.on('requestDocument', () => {
-    socket.emit('document', documentContent);
+  socket.on('requestDocument', (documentId) => {
+    if (documents[documentId]) {
+      socket.join(documentId);
+      socket.emit('document', documents[documentId]);
+    }
+    else {
+      socket.emit('error', 'Document not found');
+    }
   });
 
-  socket.on('newDocument', (newContent) => {
-    console.log('new content rec:', newContent)
-    const deltaObj = new QuillDelta(newContent);
-    documentContent = deltaObj;
-    socket.broadcast.emit('document', documentContent); // Broadcast new document content to all clients
+  socket.on('newDocument', (documentId, newContent) => {
+    console.log('new Document :',newContent)
+    const newDocument = new QuillDelta(newContent.delta);
+    documents[documentId] = newDocument;
+    // io.to(documentId).emit('document', newDocument);  //broadcast to every one 
   });
 
-  // Listen for changes from the client
-  // socket.on('change', (delta) => {
-  //   console.log('data received', delta);
-  //   documentContent = delta; // Adjust this based on your delta format
-  //   socket.broadcast.emit('change', delta); // Broadcast change to all other clients
+
+  socket.on('change', (documentId, delta) => {
+    console.log('changes received:',delta)
+    if (documents[documentId]) {
+      const deltaObj = new QuillDelta(delta);
+      documents[documentId] = documents[documentId].compose(deltaObj);
+      socket.to(documentId).emit('change', delta);
+    }
+  });
+
+  // socket.on('saveDocument', (content) => {
+  //   console.log('Saving document:', content);
+  //   fs.writeFileSync(path.join(__dirname, 'document.json'), JSON.stringify(content));
   // });
-
-  socket.on('change', (delta) => {
-    console.log('data received:', delta);
-    const deltaObj = new QuillDelta(delta);
-    // console.log('previous data:',documentContent)
-    // console.log('deltaObj:',deltaObj);
-    documentContent = documentContent.compose(deltaObj); // Compose the changes
-    socket.broadcast.emit('change', delta); // Broadcast change to all other clients
-  });
-
-
-  socket.on('saveDocument', (content) => {
-    console.log('Saving document:', content);
-    fs.writeFileSync(path.join(__dirname, 'document.json'), JSON.stringify(content));
-  });
 
   socket.on('disconnect', () => {
     console.log('user disconnected');
