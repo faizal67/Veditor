@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 *{
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    /* font-family: Verdana, Geneva, Tahoma, sans-serif; */
+    font-family: "Montserrat", Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .controls {
@@ -84,7 +85,6 @@
     position: absolute;
     text-align: center;
     width: 180px;
-    z-index: 1;
 }
 
 .camera {
@@ -109,3 +109,11 @@
 .container{
   width: 80%;
 }
+
+/* .glass-card {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  padding: 20px;
+} */
