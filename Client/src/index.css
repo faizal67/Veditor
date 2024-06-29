@@ -117,3 +117,18 @@
   border-radius: 10px;
   padding: 20px;
 } */
+
+@keyframes blurAnimation{
+  from {
+    backdrop-filter: blur(0);
+    background-color: rgba(148, 163, 184, 0); /* slate-400 with 0 opacity */
+  }
+  to {
+    backdrop-filter: blur(10px); /* equivalent to backdrop-blur-md */
+    background-color: rgba(148, 163, 184, 0.5); /* slate-400 with 50% opacity */
+  }
+}
+
+.blur-animation{
+  animation: blurAnimation 0.5s ease-in-out
+}

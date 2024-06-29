@@ -9,9 +9,13 @@ import { v4 as uuidv4 } from 'uuid';
 import { Delta } from "quill/core";
 import socket from "./socket";
 
+import { useSelector } from 'react-redux';
+import Logout from "./components/Logout";
+
 
 
 const Home = () => {
+  const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
   const [isLoginCardVisible, setLoginCardVisible] = useState(false);
   const [isSignUpCardVisible, setSignUpCardVisible] = useState(false);
@@ -71,40 +75,66 @@ const Home = () => {
   return (
     <div className="h-screen  bg-[url('')] bg-no-repeat bg-cover ">
       <div className="h-screen  bg-sky-50 bg-opacity-90 flex flex-col items-center">
-        <button
-          onClick={handleOpenLoginCard}
-          className="
-          fixed top-10 right-12
-          mr-[90px]
-          p-2   
-          text-sm
-          font-semibold
-          rounded-md 
-          text-blue-700
-          transition-all
-          bg-blue-50
-          hover:text-blue-700
-          hover:bg-blue-100
-         ">Sign in</button>
-        <button
-          onClick={handleOpenSignUpCard}
-          className="
-          fixed top-10 right-12
-          border-2
-          border-blue-700
-          p-2   
-          text-sm
-          font-semibold
-          rounded-md 
-          text-blue-700
-          transition-all
-          shadow-xl
-          bg-blue-50
-          hover:text-blue-700
-          hover:shadow-slate-400
-         ">Sign up</button>
-         {isLoginCardVisible && <LoginCard onClose={handleCloseLoginCard} />}
-         {isSignUpCardVisible && <SignUpCard onClose={handleCloseSignUpCard} />}
+        {isLoginCardVisible && <LoginCard onClose={handleCloseLoginCard} />}
+        {isSignUpCardVisible && <SignUpCard onClose={handleCloseSignUpCard} />}
+        {
+          user ?
+            <div>
+              <div className="
+                  fixed top-10 right-12
+                  mr-[90px]
+                  p-2   
+                  text-sm
+                  font-semibold
+                  rounded-md 
+                  cursor-pointer
+                  text-blue-700
+                  transition-all
+                  bg-blue-50
+                  hover:text-blue-700
+                  hover:bg-blue-100">
+                {user.userName}
+              </div>
+              <Logout />
+            </div>
+            :
+            <div>
+              <button
+                onClick={handleOpenLoginCard}
+                className="
+                  fixed top-10 right-12
+                  mr-[90px]
+                  p-2   
+                  text-sm
+                  font-semibold
+                  rounded-md 
+                  text-blue-700
+                  transition-all
+                  bg-blue-50
+                  hover:text-blue-700
+                  hover:bg-blue-100
+                  cursor-pointer
+                ">Sign in</button>
+              <button
+                onClick={handleOpenSignUpCard}
+                className="
+                  fixed top-10 right-12
+                  border-2
+                  border-blue-700
+                  p-2   
+                  text-sm
+                  font-semibold
+                  rounded-md 
+                  cursor-pointer
+                  text-blue-700
+                  transition-all
+                  shadow-xl
+                  bg-blue-50
+                  hover:text-blue-700
+                  hover:shadow-slate-400
+                ">Sign up</button>
+            </div>
+        }
         <div className="container">
           <div className="text-center flex flex-row  justify-center">
             <h1 className="pt-20 text-6xl text-blue-900">V</h1>

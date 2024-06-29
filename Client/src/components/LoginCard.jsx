@@ -1,20 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+
+import { useDispatch } from 'react-redux';
+import { login } from '../redux/slices/authSlice';
 
 const LoginCard = ({ onClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const heading = document.querySelector('.card-bg');
+    if (heading) {
+      heading.classList.add('blur-animation');
+    }
+  }, [])
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle login logic here
     console.log('Email:', email);
     console.log('Password:', password);
+    const user = { userName: 'Faizal' }; 
+    const token = 'your-jwt-token'; 
+    dispatch(login({ user, token }));
+    onClose()
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md bg-slate-400 bg-opacity-50 z-10">
-      <div className="bg-white p-8 rounded-lg backdrop-blur-lg bg-opacity-70 shadow-2xl shadow-slate-600 w-96 glass-card">
-        <button onClick={onClose} className="absolute top-5 right-7 text-right text-lg font-bold hover:bg-white px-1 rounded-md transition-all">X</button>
+    <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md bg-slate-400 bg-opacity-50 z-10 card-bg">
+      <div className="bg-white p-8 rounded-lg backdrop-blur-lg bg-opacity-70 shadow-2xl shadow-gray-600 w-96 hover:transition-color">
+        <button onClick={onClose} className="absolute top-5 right-7 text-right text-lg font-semibold hover:bg-slate-300 p-1 px-3 rounded-full transition-all">X</button>
         <h2 className="text-2xl font-semibold mb-6 text-center mt-3">Log in</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">

@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const SignUpCard = ({ onClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  useEffect(() => {
+    const heading = document.querySelector('.card-bg');
+    if (heading) {
+      heading.classList.add('blur-animation');
+    }
+  }, [])
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -14,9 +21,9 @@ const SignUpCard = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md bg-slate-400 bg-opacity-50 z-10">
-      <div className="bg-white bg-opacity-70 backdrop-blur-lg p-8 rounded-lg shadow-lg w-96 glass-card">
-      <button onClick={onClose} className="absolute top-5 right-7 text-right text-lg font-bold hover:bg-white px-1 rounded-md transition-all">X</button>
+    <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md bg-slate-400 bg-opacity-50 z-10 card-bg">
+      <div className="bg-white bg-opacity-70 backdrop-blur-lg p-8 rounded-lg shadow-lg w-96 card-bg">
+      <button onClick={onClose} className="absolute top-5 right-7 text-right text-lg font-semibold hover:bg-white p-1 px-3 rounded-full transition-all">X</button>
         <h2 className="text-2xl font-semibold mb-6 mt-3 text-center">Sign Up</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
