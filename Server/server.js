@@ -2,75 +2,35 @@ const express = require('express');
 const http = require('http');
 const cors = require('cors');
 const { Server } = require('socket.io');
-const QuillDelta = require('quill-delta');
-
-const fs = require('fs');
-const path = require('path');
+// const mongoose = require('mongoose');
+const authRoutes = require('./routes/authRoutes');
+const { handleSocketConnection } = require('./sockets/socketHandlers');
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:5173','http://192.168.20.104:5173'], // Vite app URL
+    origin: 'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true, // if you need to pass cookies with CORS requests
+    credentials: true,
   },
 });
 
-const corsOptions = {
-  origin: ['http://localhost:5173','http://192.168.20.104:5173'], // Vite app URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // HTTP methods to allow
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
-};
-app.use(cors(corsOptions));
+app.use(cors());
+app.use(express.json());
 
-// let documentContent = ''; // Simple in-memory document storage for example
-// let documentContent = new QuillDelta(); // Initialize with empty Delta
+// mongoose.connect('mongodb://localhost:27017/yourdbname', {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
 
-const documents = {};
+app.use('/api/auth', authRoutes);
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
+io.on('connection', (socket) => handleSocketConnection(socket, io));
 
-  // Handle request for current document content
-  socket.on('requestDocument', (documentId) => {
-    if (documents[documentId]) {
-      socket.join(documentId);
-      socket.emit('document', documents[documentId]);
-    }
-    else {
-      socket.emit('error', 'Document not found');
-    }
-  });
+const PORT = process.env.PORT || 3000;
 
-  socket.on('newDocument', (documentId, newContent) => {
-    console.log('new Document :',newContent)
-    const newDocument = new QuillDelta(newContent.delta);
-    documents[documentId] = newDocument;
-    // io.to(documentId).emit('document', newDocument);  //broadcast to every one 
-  });
-
-
-  socket.on('change', (documentId, delta) => {
-    console.log('changes received:',delta)
-    if (documents[documentId]) {
-      const deltaObj = new QuillDelta(delta);
-      documents[documentId] = documents[documentId].compose(deltaObj);
-      socket.to(documentId).emit('change', delta);
-    }
-  });
-
-  // socket.on('saveDocument', (content) => {
-  //   console.log('Saving document:', content);
-  //   fs.writeFileSync(path.join(__dirname, 'document.json'), JSON.stringify(content));
-  // });
-
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
-});
-
-server.listen(3000, () => {
-  console.log('listening on *:3000');
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
