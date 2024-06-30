@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch , useSelector} from 'react-redux';
 import { login } from '../redux/slices/authSlice';
 
 const LoginCard = ({ onClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
+  const authError = useSelector((state) => state.auth.error);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated)
+  console.log('authError:',authError)
+
 
   useEffect(() => {
     const heading = document.querySelector('.card-bg');
@@ -15,16 +19,20 @@ const LoginCard = ({ onClose }) => {
     }
   }, [])
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      onClose();
+    }
+  }, [isAuthenticated, onClose]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle login logic here
-    console.log('Email:', email);
-    console.log('Password:', password);
-    const user = { userName: 'Faizal' }; 
-    const token = 'your-jwt-token'; 
-    dispatch(login({ user, token }));
-    onClose()
+    // console.log('Email:', email);
+    // console.log('Password:', password);
+    dispatch(login({ email, password }));
   };
+
 
   return (
     <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md bg-slate-400 bg-opacity-50 z-10 card-bg">
@@ -57,6 +65,7 @@ const LoginCard = ({ onClose }) => {
               required
             />
           </div>
+          {authError && <p className="text-red-500">{authError.message}</p>}
           <div className="flex items-center justify-between">
             <button
               type="submit"

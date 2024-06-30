@@ -22,8 +22,8 @@ const Logout = () => {
                   shadow-xl
                   bg-blue-50
                   hover:text-blue-700
-                  hover:shadow-slate-400'
                   cursor-pointer
+                  hover:shadow-slate-400'
                   onClick={handleLogout}>Logout</button>
   );
 };

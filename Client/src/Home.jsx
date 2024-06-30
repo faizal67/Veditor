@@ -49,12 +49,12 @@ const Home = () => {
   const handleFileUpload = (fileDelta) => {
     console.log('getting file Delta:', fileDelta)
     const documentId = uuidv4();
-    const Document = {
-      documentId: documentId,
-      delta: fileDelta
-    }
+    // const Document = {
+    //   documentId: documentId,
+    //   delta: fileDelta
+    // }
     console.log('sending data:', Document)
-    socket.emit('newDocument', documentId, Document); // Send the new document content to the server
+    socket.emit('newDocument', documentId, fileDelta); // Send the new document content to the server
     navigate(`/editor/${documentId}`); //navigate the ui to editor window
   };
 
@@ -62,11 +62,11 @@ const Home = () => {
   const createNewDocument = () => {
     const documentId = uuidv4();
     const delta = new Delta()
-    const newDocument = {
-      documentId: documentId,
-      delta: delta
-    }
-    socket.emit('newDocument', documentId, newDocument);
+    // const newDocument = {
+    //   documentId: documentId,
+    //   delta: delta
+    // }
+    socket.emit('newDocument', documentId, delta);
     navigate(`/editor/${documentId}`);
   };
 
@@ -76,7 +76,7 @@ const Home = () => {
     <div className="h-screen  bg-[url('')] bg-no-repeat bg-cover ">
       <div className="h-screen  bg-sky-50 bg-opacity-90 flex flex-col items-center">
         {isLoginCardVisible && <LoginCard onClose={handleCloseLoginCard} />}
-        {isSignUpCardVisible && <SignUpCard onClose={handleCloseSignUpCard} />}
+        {isSignUpCardVisible && <SignUpCard onClose={handleCloseSignUpCard} openLogin={handleOpenLoginCard}/>}
         {
           user ?
             <div>
@@ -93,7 +93,7 @@ const Home = () => {
                   bg-blue-50
                   hover:text-blue-700
                   hover:bg-blue-100">
-                {user.userName}
+                {user.username}
               </div>
               <Logout />
             </div>

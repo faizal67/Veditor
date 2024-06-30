@@ -17,10 +17,11 @@ const handleSocketConnection = (socket, io) => {
     }
   });
 
-  socket.on('newDocument', ({ documentId, delta }) => {
+  socket.on('newDocument', (documentId, delta ) => {
+    // console.log(delta)
     const newDocument = new QuillDelta(delta);
     documents[documentId] = newDocument;
-    io.to(documentId).emit('document', newDocument);
+    // io.to(documentId).emit('document', newDocument);
   });
 
   socket.on('change', (documentId, delta) => {
@@ -31,12 +32,12 @@ const handleSocketConnection = (socket, io) => {
     }
   });
 
-  socket.on('saveDocument', (documentId) => {
-    const documentContent = documents[documentId];
-    if (documentContent) {
-      fs.writeFileSync(path.join(__dirname, `${documentId}.json`), JSON.stringify(documentContent));
-    }
-  });
+  // socket.on('saveDocument', (documentId) => {
+  //   const documentContent = documents[documentId];
+  //   if (documentContent) {
+  //     fs.writeFileSync(path.join(__dirname, `${documentId}.json`), JSON.stringify(documentContent));
+  //   }
+  // });
 
   socket.on('disconnect', () => {
     console.log('user disconnected');

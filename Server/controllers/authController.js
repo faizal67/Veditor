@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../models/userModel');
+// const User = require('../models/userModel');
 const { JWT_SECRET } = require('../config');
 const { generateToken } = require('../utils/jwtUtils');
 
@@ -46,7 +46,7 @@ const login = async (req, res) => {
 
   const token = generateToken(user) //generating the jwt token
 
-  res.json({ token, user: { email: user.email } });
+  return res.status(200).json({ token, user: { email: user.email } });
 };
 
 const me = (req, res) => {
@@ -58,7 +58,11 @@ const me = (req, res) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    res.json({ user: decoded });
+    const user = users[decoded.email];
+    res.json({ user: {
+      username: user.username,
+      email: user.email
+    }});
   } catch (e) {
     res.status(401).json({ message: 'Token is not valid' });
   }
