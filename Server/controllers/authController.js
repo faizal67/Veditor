@@ -61,11 +61,39 @@ const me = (req, res) => {
     const user = users[decoded.email];
     res.json({ user: {
       username: user.username,
-      email: user.email
+      email: user.email,
+      docs: user.docs
     }});
   } catch (e) {
     res.status(401).json({ message: 'Token is not valid' });
   }
 };
 
-module.exports = { register, login, me };
+
+const addDocumentToUser = async (req, res) => {
+  const { docId, fileName } = req.body;
+  const token = req.header('Authorization').replace('Bearer ', '');
+
+  if (!token) {
+    return res.status(401).json({ message: 'No token, authorization denied' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = users[decoded.email];
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const newDoc = { docId, fileName };
+    user.docs = user.docs ? [...user.docs, newDoc] : [newDoc];
+    res.json({ docs: user.docs });
+  } catch (e) {
+    res.status(401).json({ message: 'Token is not valid' });
+  }
+};
+
+
+module.exports = { register, login, me, addDocumentToUser };
+
+

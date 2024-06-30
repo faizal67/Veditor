@@ -14,11 +14,12 @@ const FileUpload = ({ handleFileUpload }) => {
   const handleFile = async (event) => {
     const file = event.target.files[0];
     if (file) {
+      const fileName = file.name; // Get the file name
       const arrayBuffer = await file.arrayBuffer();
       const result = await mammoth.convertToHtml({ arrayBuffer });
       const htmlContent = result.value;
       const delta = htmlToDelta(htmlContent);
-      handleFileUpload(delta);
+      handleFileUpload(delta, fileName);
     }
   };
 

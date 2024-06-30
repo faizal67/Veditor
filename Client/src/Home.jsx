@@ -9,14 +9,16 @@ import { v4 as uuidv4 } from 'uuid';
 import { Delta } from "quill/core";
 import socket from "./socket";
 
-import { useSelector } from 'react-redux';
-import Logout from "./components/Logout";
+import { useDispatch, useSelector } from 'react-redux';
+import { resetAuthError, addDocumentToUser, logout } from "./redux/slices/authSlice";
+import Button from "./components/Button";
 
 
 
 const Home = () => {
   const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isLoginCardVisible, setLoginCardVisible] = useState(false);
   const [isSignUpCardVisible, setSignUpCardVisible] = useState(false);
 
@@ -27,6 +29,7 @@ const Home = () => {
 
   const handleCloseLoginCard = () => {
     setLoginCardVisible(false);
+    dispatch(resetAuthError());
   };
 
   const handleOpenSignUpCard = () => {
@@ -36,6 +39,15 @@ const Home = () => {
 
   const handleCloseSignUpCard = () => {
     setSignUpCardVisible(false);
+    dispatch(resetAuthError());
+  };
+
+  const handleOpenDashboard = () => {
+    navigate('/dashboard')
+  }
+
+  const handleLogout = () => {
+    dispatch(logout());
   };
 
   useEffect(() => {
@@ -46,15 +58,17 @@ const Home = () => {
   }, [])
 
 
-  const handleFileUpload = (fileDelta) => {
+  const handleFileUpload = (fileDelta, fileName) => {
     console.log('getting file Delta:', fileDelta)
     const documentId = uuidv4();
     // const Document = {
     //   documentId: documentId,
-    //   delta: fileDelta
+    //   delta: fileDelta,
+    //   documentName: fileName
     // }
-    console.log('sending data:', Document)
+    // console.log('sending data:', Document)
     socket.emit('newDocument', documentId, fileDelta); // Send the new document content to the server
+    dispatch(addDocumentToUser({ docId: documentId, fileName }))
     navigate(`/editor/${documentId}`); //navigate the ui to editor window
   };
 
@@ -72,11 +86,13 @@ const Home = () => {
 
 
 
+
+
   return (
     <div className="h-screen  bg-[url('')] bg-no-repeat bg-cover ">
       <div className="h-screen  bg-sky-50 bg-opacity-90 flex flex-col items-center">
         {isLoginCardVisible && <LoginCard onClose={handleCloseLoginCard} />}
-        {isSignUpCardVisible && <SignUpCard onClose={handleCloseSignUpCard} openLogin={handleOpenLoginCard}/>}
+        {isSignUpCardVisible && <SignUpCard onClose={handleCloseSignUpCard} openLogin={handleOpenLoginCard} />}
         {
           user ?
             <div>
@@ -95,44 +111,30 @@ const Home = () => {
                   hover:bg-blue-100">
                 {user.username}
               </div>
-              <Logout />
+              <Button
+                text={'Logout'}
+                className='fixed top-10 right-12 border-2 border-blue-700 hover:shadow-slate-400 shadow-lg'
+                onClick={handleLogout}
+              />
+              <Button
+                text={'Dashboard'}
+                onClick={handleOpenDashboard}
+                className="fixed top-10 left-12"
+              />
             </div>
             :
             <div>
-              <button
+              <Button
+                text={'Sign in'}
                 onClick={handleOpenLoginCard}
-                className="
-                  fixed top-10 right-12
-                  mr-[90px]
-                  p-2   
-                  text-sm
-                  font-semibold
-                  rounded-md 
-                  text-blue-700
-                  transition-all
-                  bg-blue-50
-                  hover:text-blue-700
-                  hover:bg-blue-100
-                  cursor-pointer
-                ">Sign in</button>
-              <button
+                className="fixed top-10 right-12 mr-[90px]"
+              />
+              <Button
+                text={'Sign up'}
                 onClick={handleOpenSignUpCard}
-                className="
-                  fixed top-10 right-12
-                  border-2
-                  border-blue-700
-                  p-2   
-                  text-sm
-                  font-semibold
-                  rounded-md 
-                  cursor-pointer
-                  text-blue-700
-                  transition-all
-                  shadow-xl
-                  bg-blue-50
-                  hover:text-blue-700
-                  hover:shadow-slate-400
-                ">Sign up</button>
+                className="fixed top-10 right-12 border-2 border-blue-700 hover:shadow-slate-400 shadow-lg"
+              />
+
             </div>
         }
         <div className="container">
