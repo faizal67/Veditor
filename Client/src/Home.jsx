@@ -80,7 +80,9 @@ const Home = () => {
     //   documentId: documentId,
     //   delta: delta
     // }
+    const fileName = 'Untitled Doc'
     socket.emit('newDocument', documentId, delta);
+    dispatch(addDocumentToUser({ docId: documentId, fileName }))
     navigate(`/editor/${documentId}`);
   };
 

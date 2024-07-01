@@ -2,10 +2,9 @@ const express = require('express');
 const http = require('http');
 const cors = require('cors');
 const { Server } = require('socket.io');
-// const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
 const { handleSocketConnection } = require('./sockets/socketHandlers');
-
+const db = require('./db/dbConn');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -17,16 +16,11 @@ const io = new Server(server, {
   },
 });
 
+
+
 app.use(cors());
 app.use(express.json());
-
-// mongoose.connect('mongodb://localhost:27017/yourdbname', {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// });
-
 app.use('/api/auth', authRoutes);
-
 io.on('connection', (socket) => handleSocketConnection(socket, io));
 
 const PORT = process.env.PORT || 3000;

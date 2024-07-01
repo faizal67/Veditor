@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { signup } from '../redux/slices/authSlice';
+import LoadingSpinner from './LoadingSpinner';
 
 const SignUpCard = ({ onClose,openLogin }) => {
   const [username, setUsername] = useState('');
@@ -13,14 +14,13 @@ const SignUpCard = ({ onClose,openLogin }) => {
   const authError = useSelector((state) => state.auth.error);
   const signupSuccess = useSelector((state) => state.auth.signupSuccess)
   
-
+  const isLoading = useSelector(state => state.auth.loading)
   useEffect(() => {
     const heading = document.querySelector('.card-bg');
     if (heading) {
       heading.classList.add('blur-animation');
     }
   }, [])
-
 
   useEffect(() => {
     if (signupSuccess) {
@@ -112,7 +112,7 @@ const SignUpCard = ({ onClose,openLogin }) => {
               type="submit"
               className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
             >
-              Sign Up
+              {isLoading ? <LoadingSpinner/> : 'SignUp'}
             </button>
           </div>
         </form>

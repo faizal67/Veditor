@@ -1,4 +1,4 @@
-const Button = ({ text, onClick, className='' }) => {
+const Button = ({ text, onClick, className='', children }) => {
     return (
         <button
             onClick={onClick}
@@ -14,7 +14,7 @@ const Button = ({ text, onClick, className='' }) => {
                 hover:bg-blue-100
                 cursor-pointer
                 ${className}
-            `}>{text}</button>
+            `}>{text}{children}</button>
     )
 }
 

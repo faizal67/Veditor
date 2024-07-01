@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { useDispatch , useSelector} from 'react-redux';
 import { login } from '../redux/slices/authSlice';
+import LoadingSpinner from './LoadingSpinner';
 
 const LoginCard = ({ onClose }) => {
   const [email, setEmail] = useState('');
@@ -24,6 +25,8 @@ const LoginCard = ({ onClose }) => {
       onClose();
     }
   }, [isAuthenticated, onClose]);
+
+  const isLoading = useSelector(state => state.auth.loading)
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -71,7 +74,7 @@ const LoginCard = ({ onClose }) => {
               type="submit"
               className="w-full px-4 py-2 mt-8 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
             >
-              Login
+              {isLoading ? <LoadingSpinner/> : 'Login'}
             </button>
           </div>
         </form>

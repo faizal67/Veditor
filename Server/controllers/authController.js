@@ -1,27 +1,27 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-// const User = require('../models/userModel');
+const User = require('../models/userModel');
 const { JWT_SECRET } = require('../config');
 const { generateToken } = require('../utils/jwtUtils');
 
 
-const users = {};
+// const users = {};
 
 const register = async (req, res) => {
   const { username, email, password } = req.body;
 
-  // if (await User.findOne({ username })) {
-  //   return res.status(400).json({ message: 'User already exists' });
-  // }
-
-  if (users[email]) {
+  if (await User.findOne({ email })) {
     return res.status(400).json({ message: 'User already exists' });
   }
 
+  // if (users[email]) {
+  //   return res.status(400).json({ message: 'User already exists' });
+  // }
+
   const hashedPassword = await bcrypt.hash(password, 10);
-  users[email] = { username,email, password: hashedPassword }
-  // const user = new User({ username,email, password: hashedPassword });
-  // await user.save();
+  // users[email] = { username,email, password: hashedPassword }
+  const user = new User({ username,email, password: hashedPassword });
+  await user.save();
 
   res.status(201).json({ message: 'User registered successfully' });
 };
@@ -29,15 +29,15 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-  // const user = await User.findOne({ username });
-  // if (!user) {
-  //   return res.status(400).json({ message: 'Invalid credentials' });
-  // }
-
-  const user = users[email];
+  const user = await User.findOne({ email });
   if (!user) {
     return res.status(400).json({ message: 'Invalid credentials' });
   }
+
+  // const user = users[email];
+  // if (!user) {
+  //   return res.status(400).json({ message: 'Invalid credentials' });
+  // }
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
@@ -49,7 +49,7 @@ const login = async (req, res) => {
   return res.status(200).json({ token, user: { email: user.email } });
 };
 
-const me = (req, res) => {
+const me =async (req, res) => {
   const token = req.header('Authorization').replace('Bearer ', '');
 
   if (!token) {
@@ -58,7 +58,10 @@ const me = (req, res) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    const user = users[decoded.email];
+    const user = await User.findOne({ email: decoded.email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
     res.json({ user: {
       username: user.username,
       email: user.email,
@@ -80,13 +83,13 @@ const addDocumentToUser = async (req, res) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    const user = users[decoded.email];
+    const user = await User.findOne({ email: decoded.email });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-
     const newDoc = { docId, fileName };
     user.docs = user.docs ? [...user.docs, newDoc] : [newDoc];
+    await user.save()
     res.json({ docs: user.docs });
   } catch (e) {
     res.status(401).json({ message: 'Token is not valid' });

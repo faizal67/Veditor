@@ -2,31 +2,34 @@ import React, { useEffect, useRef, useState } from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import socket from './socket';
+import { useDispatch, useSelector } from 'react-redux';
+import {  setContent } from './redux/slices/docSlice';
 
 
 const Editor = ({ documentId }) => {
-  const [content, setContent] = useState();
+  const dispatch = useDispatch();
+  const content = useSelector((state) => state.document.content);
   const containerRef = useRef(null);
   const quillRef = useRef(null);
-
   
+
   useEffect(() => {
-    console.log('current content is:', content);
     socket.emit('requestDocument', documentId);
 
+    
     const handleInitialDocument = (documentContent) => {
       if (documentContent && quillRef.current) {
         quillRef.current.setContents(documentContent);
-        setContent(documentContent);
+        dispatch(setContent(documentContent));
       }
     };
-
+    
     socket.on('document', handleInitialDocument);
-
+    
     socket.on('change', (delta) => {
       if (quillRef.current) {
         quillRef.current.updateContents(delta);
-        // setContent(quillRef.current.getContents)
+        setContent(quillRef.current.getContents)
       }
     });
 
@@ -36,10 +39,18 @@ const Editor = ({ documentId }) => {
     };
   }, ['document']);
 
+  // const handleTextChange = (delta, oldDelta, source) => {
+  //   if (quillRef.current && source === 'user') {
+  //     const newDelta = quillRef.current.getContents();
+  //     setContent(newDelta);
+  //     socket.emit('change', documentId, delta);
+  //   }
+  // };
+
   const handleTextChange = (delta, oldDelta, source) => {
     if (quillRef.current && source === 'user') {
       const newDelta = quillRef.current.getContents();
-      setContent(newDelta);
+      dispatch(setContent(newDelta));
       socket.emit('change', documentId, delta);
     }
   };

@@ -27,7 +27,7 @@ const FileUpload = ({ handleFileUpload }) => {
     <div className="my-4">
       <input
         type="file"
-        accept=".doc,.docx"
+        accept=".doc,.docx,"
         onChange={handleFile}
         className="block w-full text-sm 
                    file:mr-4 file:py-2 file:px-4
