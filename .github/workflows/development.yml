@@ -1,4 +1,4 @@
-name: Deployment CI
+name: Development CI
 
 on:
   push:
@@ -24,12 +24,12 @@ jobs:
 
       - name: Build and push client image
         run: |
-          docker build -t faizal67/veditor-client:latest ./client
+          docker build -t faizal67/veditor-client:latest ./client/Dockerfile
           docker push faizal67/veditor-client:latest
 
       - name: Build and push server image
         run: |
-          docker build -t faizal67/veditor-server:latest ./server
+          docker build -t faizal67/veditor-server:latest ./server/Dockerfile
           docker push faizal67/veditor-server:latest
   
   deploy:
