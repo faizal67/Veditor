@@ -31,14 +31,12 @@ jobs:
         run: |
           docker build -t faizal67/veditor-server:latest ./server
           docker push faizal67/veditor-server:latest
-
+  
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
