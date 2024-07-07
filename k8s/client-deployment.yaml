@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: veditor-client
+  template:
+    metadata:
+      labels:
+        app: veditor-client
+    spec:
+      containers:
+        - name: veditor-client
+          image: faizal67/veditor-client:latest
+          ports:
+            - containerPort: 80

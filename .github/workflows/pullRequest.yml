@@ -1,0 +1,32 @@
+name: Pull Request CI
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js and npm
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install backend dependencies and run tests
+        working-directory: ./server
+        run: |
+          npm install
+          npm test
+
+      - name: Install frontend dependencies and run tests
+        working-directory: ./client
+        run: |
+          npm install
+          npm test
