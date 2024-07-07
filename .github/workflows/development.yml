@@ -24,12 +24,12 @@ jobs:
 
       - name: Build and push client image
         run: |
-          docker build -t faizal67/veditor-client:latest ./client/Dockerfile
+          docker build -t faizal67/veditor-client:latest ./Client
           docker push faizal67/veditor-client:latest
 
       - name: Build and push server image
         run: |
-          docker build -t faizal67/veditor-server:latest ./server/Dockerfile
+          docker build -t faizal67/veditor-server:latest ./Server
           docker push faizal67/veditor-server:latest
   
   deploy:
