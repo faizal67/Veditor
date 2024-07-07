@@ -31,7 +31,7 @@ jobs:
         run: |
           docker build -t faizal67/veditor-server:latest ./server
           docker push faizal67/veditor-server:latest
-  
+
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
@@ -47,8 +47,39 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-south-1
 
-      - name: Set up kubectl
-        uses: actions-hub/kubectl
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
+      - name: Install eksctl
+        run: |
+          sudo wget -O /usr/local/bin/eksctl "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz"
+          sudo chmod +x /usr/local/bin/eksctl
+          eksctl version  # Verify installation
+
+      - name: Configure AWS credentials for eksctl
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set region ap-south-1
+
+      - name: Create EKS Cluster
+        run: |
+          eksctl create cluster \
+            --name=my-cluster \
+            --region=ap-south-1 \
+            --node-type=t3.micro \
+            --nodes=2 \
+            --nodes-min=1 \
+            --nodes-max=2 \
+            --managed
+
+      - name: Verify EKS Cluster
+        run: eksctl get cluster --name=my-cluster --region=ap-south-1
 
       - name: Deploy to EKS
         run: |
