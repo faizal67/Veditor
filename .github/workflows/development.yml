@@ -80,7 +80,7 @@ jobs:
           aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
           aws configure set region ap-south-1
 
-      - name: Create or Update EKS cluster
+      - name: Create EKS cluster
         run: |
           eksctl create cluster \
             --name veditor-cluster \
@@ -91,8 +91,7 @@ jobs:
             --nodes 2 \
             --nodes-min 1 \
             --nodes-max 2 \
-            --managed \
-            --update
+            --managed 
 
       - name: Update kubeconfig
         run: |
