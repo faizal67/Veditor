@@ -80,7 +80,7 @@ jobs:
           aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
           aws configure set region ap-south-1
 
-      - name: Create EKS cluster
+      - name: Create or Update EKS cluster
         run: |
           eksctl create cluster \
             --name veditor-cluster \
@@ -91,7 +91,8 @@ jobs:
             --nodes 2 \
             --nodes-min 1 \
             --nodes-max 2 \
-            --managed
+            --managed \
+            --update
 
       - name: Update kubeconfig
         run: |
@@ -108,9 +109,9 @@ jobs:
           kubectl apply -f k8s/server-deployment.yaml
           kubectl apply -f k8s/server-service.yaml
         
-          - name: Wait for client deployment rollout to complete
-          run: |
-            kubectl rollout status deployment/veditor-client --watch=false
+      - name: Wait for client deployment rollout to complete
+        run: |
+          kubectl rollout status deployment/veditor-client --watch=false
   
       - name: Wait for server deployment rollout to complete
         run: |
