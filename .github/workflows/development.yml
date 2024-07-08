@@ -50,11 +50,26 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y awscli
 
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+
       - name: Install eksctl
         run: |
-          sudo wget -O /usr/local/bin/eksctl "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz"
-          sudo chmod +x /usr/local/bin/eksctl
-          eksctl version  # Verify installation
+          if [[ "$(uname -m)" == "x86_64" ]]; then
+            curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz" --output eksctl.tar.gz
+          elif [[ "$(uname -m)" == "aarch64" ]]; then
+            curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Linux_arm64.tar.gz" --output eksctl.tar.gz
+          else
+            echo "Unsupported architecture"
+            exit 1
+          fi
+          tar xz -f eksctl.tar.gz -C /tmp
+          sudo mv /tmp/eksctl /usr/local/bin
+          eksctl version
+        
 
       - name: Configure AWS credentials for eksctl
         env:
@@ -65,23 +80,35 @@ jobs:
           aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
           aws configure set region ap-south-1
 
-      - name: Create EKS Cluster
+      - name: Create EKS cluster
         run: |
           eksctl create cluster \
-            --name=my-cluster \
-            --region=ap-south-1 \
-            --node-type=t3.micro \
-            --nodes=2 \
-            --nodes-min=1 \
-            --nodes-max=2 \
+            --name my-cluster \
+            --version 1.21 \
+            --region ap-south-1 \
+            --nodegroup-name linux-nodes \
+            --node-type t3.micro \
+            --nodes 3 \
+            --nodes-min 1 \
+            --nodes-max 4 \
             --managed
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name my-cluster --region ap-south-1
 
       - name: Verify EKS Cluster
         run: eksctl get cluster --name=my-cluster --region=ap-south-1
 
+        
       - name: Deploy to EKS
         run: |
           kubectl apply -f k8s/client-deployment.yaml
           kubectl apply -f k8s/client-service.yaml
           kubectl apply -f k8s/server-deployment.yaml
           kubectl apply -f k8s/server-service.yaml
+        
+      - name: Clean up
+        if: always()
+        run: |
+          eksctl delete cluster --name my-cluster --region us-west-2
