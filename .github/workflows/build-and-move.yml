@@ -23,19 +23,19 @@ jobs:
 
       - name: Install dependencies and build client
         run: |
-          cd client
+          cd Client
           npm install
           npm run build  
 
       - name: Move dist to server
         run: |
-          mv client/dist server/
+          mv Client/dist Server/
 
       - name: Commit and push changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add server/dist
+          git add Server/dist
           git commit -m "Move dist folder to server directory"
           git push
         env:
