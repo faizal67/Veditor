@@ -17,7 +17,7 @@ const io = new Server(server, {
 });
 
 
-
+app.use(express.static('dist'))
 app.use(cors());
 app.use(express.json());
 app.use('/api/auth', authRoutes);

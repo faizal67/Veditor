@@ -3,10 +3,10 @@ name: Build and Move Dist
 on:
   push:
     branches:
-      - render  # Trigger the workflow on pushes to the main branch
+      - render  
   pull_request:
     branches:
-      - render  # Trigger the workflow on pull requests to the main branch
+      - render  
 
 jobs:
   build:
