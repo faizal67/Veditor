@@ -7,9 +7,10 @@ const { handleSocketConnection } = require('./sockets/socketHandlers');
 const db = require('./db/dbConn');
 const app = express();
 const server = http.createServer(app);
+require('dotenv').config()
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: process.env.CLIENT_URL ,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
@@ -20,6 +21,7 @@ const io = new Server(server, {
 // app.use(express.static('dist'))
 app.use(cors());
 app.use(express.json());
+app.use('/', "server is running good")
 app.use('/api/auth', authRoutes);
 io.on('connection', (socket) => handleSocketConnection(socket, io));
 

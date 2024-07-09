@@ -10,7 +10,8 @@ const initialState = {
   signupSuccess: false,
 };
 
-const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+const apiUrl = process.env.REACT_APP_API_URL;
+// const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3000';
 
 
 // Thunks
