@@ -22,9 +22,15 @@ jobs:
         working-directory: Client
         run: npm install
 
+      # Debugging step: Check package.json
+      - name: Check package.json
+        working-directory: Client
+        run: cat package.json
+
+      # Debugging step: Run build script with verbose logging
       - name: Build Vite App
         working-directory: Client
-        run: npm run build
+        run: npm run build --verbose
 
       # Debugging step: Check if Client/dist exists
       - name: Check Client/dist Directory
