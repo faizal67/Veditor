@@ -16,9 +16,9 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20'
+          node-version: '14'  # Adjust node version as needed
 
-      - name: Install Dependencies
+      - name: Install Dependencies for Client
         working-directory: Client
         run: npm install
 
@@ -26,11 +26,22 @@ jobs:
         working-directory: Client
         run: npm run build
 
+      # Debugging step: Check if Client/dist exists
+      - name: Check Client/dist Directory
+        run: ls -l Client/dist
+
       - name: Delete Existing Dist Folder in Server
-        run: rm -rf Server/dist
+        run: rm -rf Server/dist || true  # Use || true to continue if folder doesn't exist
+
+      - name: Create Server/dist Directory
+        run: mkdir -p Server/dist
 
       - name: Copy Build Output to Server
         run: cp -a Client/dist/. Server/dist/
+
+      # Debugging step: Check if Server/dist contents are copied
+      - name: Check Server/dist Directory
+        run: ls -l Server/dist
 
       - name: Clean Up Client Dist Folder
         run: rm -rf Client/dist
