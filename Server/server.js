@@ -20,6 +20,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('dist'));
 app.use('/api/auth', authRoutes);
+app.use('/status', (req, res) => {
+  res.status(200).json({ message: 'Server is up and running.' });
+});
 io.on('connection', (socket) => handleSocketConnection(socket, io));
 
 const PORT = process.env.PORT || 3000;
