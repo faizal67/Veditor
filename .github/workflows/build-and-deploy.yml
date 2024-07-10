@@ -35,10 +35,10 @@ jobs:
       - name: Clean Up Client Dist Folder
         run: rm -rf Client/dist
 
-      - name: Trigger Render Deploy Hook
-        run: |
-          echo "Triggering Render deploy hook..."
-          curl -X https://api.render.com/deploy/srv-cq738q88fa8c7383d6bg?key=dLgkkznfops
+      # - name: Trigger Render Deploy Hook
+      #   run: |
+      #     echo "Triggering Render deploy hook..."
+      #     curl -X https://api.render.com/deploy/srv-cq738q88fa8c7383d6bg?key=dLgkkznfops
 
 
 
