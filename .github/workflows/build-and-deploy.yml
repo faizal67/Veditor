@@ -38,7 +38,7 @@ jobs:
       - name: Trigger Render Deploy Hook
         run: |
           echo "Triggering Render deploy hook..."
-          curl -X POST YOUR_RENDER_DEPLOY_HOOK_URL_HERE
+          curl -X https://api.render.com/deploy/srv-cq738q88fa8c7383d6bg?key=dLgkkznfops
 
 
 
