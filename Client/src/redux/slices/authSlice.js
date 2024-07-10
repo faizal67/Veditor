@@ -10,10 +10,12 @@ const initialState = {
   signupSuccess: false,
 };
 
+
+
 // Thunks
 export const loadUser = createAsyncThunk('auth/loadUser', async (_, thunkAPI) => {
   try {
-    const res = await axios.get('http://localhost:3000/api/auth/me', {
+    const res = await axios.get('/api/auth/me', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
@@ -28,7 +30,7 @@ export const login = createAsyncThunk('auth/login', async ({ email, password }, 
   const body = JSON.stringify({ email, password });
 
   try {
-    const res = await axios.post('http://localhost:3000/api/auth/login', body, {
+    const res = await axios.post('/api/auth/login', body, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -44,7 +46,7 @@ export const login = createAsyncThunk('auth/login', async ({ email, password }, 
 export const signup = createAsyncThunk('auth/signup', async ({ email, password, username }, thunkAPI) => {
   const body = JSON.stringify({ username, email, password });
   try {
-    const res = await axios.post('http://localhost:3000/api/auth/register', body, {
+    const res = await axios.post('/api/auth/register', body, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -65,7 +67,7 @@ export const resetAuthError = createAction('auth/resetAuthError');
 export const addDocumentToUser = createAsyncThunk('auth/addDocumentToUser', async ({ docId, fileName }, thunkAPI) => {
   const body = JSON.stringify({ docId, fileName });
   try {
-    const res = await axios.post('http://localhost:3000/api/auth/addDocument', body, {
+    const res = await axios.post('/api/auth/addDocument', body, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`
