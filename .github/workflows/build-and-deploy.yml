@@ -1,0 +1,45 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - deploy  # Change this to your main branch name
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        working-directory: client
+        run: npm install
+
+      - name: Build Vite App
+        working-directory: client
+        run: npm run build
+
+      - name: Delete Existing Dist Folder in Server
+        run: rm -rf Server/dist
+
+      - name: Copy Build Output to Server
+        run: cp -a client/dist/. Server/dist/
+
+      - name: Clean Up Client Dist Folder
+        run: rm -rf client/dist
+
+      - name: Trigger Render Deploy Hook
+        run: |
+          echo "Triggering Render deploy hook..."
+          curl -X POST YOUR_RENDER_DEPLOY_HOOK_URL_HERE
+
+
+
+      # Add further steps here, like starting the server or running tests
