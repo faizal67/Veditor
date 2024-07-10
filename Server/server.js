@@ -18,6 +18,7 @@ const io = new Server(server, {
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static('dist'));
 app.use('/api/auth', authRoutes);
 io.on('connection', (socket) => handleSocketConnection(socket, io));
 
