@@ -46,11 +46,10 @@ jobs:
       - name: Clean Up Client Dist Folder
         run: rm -rf Client/dist
 
+      # Example of triggering deployment hook on Render (uncomment and adjust as needed)
       # - name: Trigger Render Deploy Hook
       #   run: |
       #     echo "Triggering Render deploy hook..."
-      #     curl -X https://api.render.com/deploy/srv-cq738q88fa8c7383d6bg?key=dLgkkznfops
-
-
+      #     curl -X POST https://api.render.com/v1/deploys/srv-cq738q88fa8c7383d6bg?key=dLgkkznfops
 
       # Add further steps here, like starting the server or running tests
