@@ -22,29 +22,40 @@ jobs:
         working-directory: Client
         run: npm install
 
+      # Debugging step: Check package.json
+      - name: Check package.json
+        working-directory: Client
+        run: cat package.json
+
+      # Debugging step: Run build script with verbose logging
       - name: Build Vite App
         working-directory: Client
-        run: npm run build
+        run: npm run build --verbose
 
       # Debugging step: Check if Client/dist exists
       - name: Check Client/dist Directory
-        run: ls -l Client/dist
+        working-directory: Client
+        run: ls -l dist
 
       - name: Delete Existing Dist Folder in Server
-        run: rm -rf Server/dist || true  # Use || true to continue if folder doesn't exist
+        working-directory: Server
+        run: rm -rf dist || true  # Use || true to continue if folder doesn't exist
 
       - name: Create Server/dist Directory
-        run: mkdir -p Server/dist
+        working-directory: Server
+        run: mkdir -p dist
 
       - name: Copy Build Output to Server
         run: cp -a Client/dist/. Server/dist/
 
       # Debugging step: Check if Server/dist contents are copied
       - name: Check Server/dist Directory
-        run: ls -l Server/dist
+        working-directory: Server
+        run: ls -l dist
 
       - name: Clean Up Client Dist Folder
-        run: rm -rf Client/dist
+        working-directory: Client
+        run: rm -rf dist
 
       # Example of triggering deployment hook on Render (uncomment and adjust as needed)
       # - name: Trigger Render Deploy Hook
