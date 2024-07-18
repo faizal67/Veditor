@@ -43,7 +43,7 @@ const EditorWrapper = () => {
       <Button text={''} onClick={saveHandler} >{loading ? <LoadingSpinner/> : 'Save'}</Button>
       </div>
       
-      <div className="w-[80%] mx-auto rounded-xl"> {/* Adjust the max width as needed */}
+      <div className="w-[80%] mx-auto rounded-xl"> 
         <Editor documentId={id} />
       </div>
     </div>

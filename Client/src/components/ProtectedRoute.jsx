@@ -17,7 +17,7 @@ const ProtectedRoute = ({ children }) => {
   }, [isAuthenticated, loading, navigate, wait]);
 
   if (loading) {
-    return <div>Loading...</div>; // You can replace this with a proper loading spinner or component
+    return <div>Loading...</div>; 
   }
 
   if (!isAuthenticated && wait){
