@@ -10,7 +10,8 @@ const initialState = {
   signupSuccess: false,
 };
 
-const apiUrl = process.env.VITE_API_URL || 'http://localhost:3000';
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
 
 // Thunks
 export const loadUser = createAsyncThunk('auth/loadUser', async (_, thunkAPI) => {
